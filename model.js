@@ -35,9 +35,10 @@ module.exports = {
 
   // Queue 
   getVisit(db, datevisit) {
-    return db('visit')
-      .where('datevisit', datevisit)
-      .orderBy('vn')
+    return db('visit as v')
+      .innerJoin('service_point as p', 'p.servpoint_code', 'v.cln')
+      .where('v.datevisit', datevisit)
+      .orderBy('v.vn')
       .limit(20)
   }
 
