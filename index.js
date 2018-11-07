@@ -5,6 +5,8 @@ const Knex = require('knex');
 const crypto = require('crypto');
 var multer = require('multer');
 
+const moment = require('moment');
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -192,6 +194,12 @@ app.get('/users/:id', checkAuth, async (req, res, next) => {
     console.log(error);
     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
   }
+});
+
+app.get('/queue/visit', checkAuth, async (req, res) => {
+  var datevisit = moment().format('YYYY-MM-DD');
+  var rs = await model.getVisit(db, datevisit);
+  res.send({ ok: true, rows: rs });
 });
 
 //error handlers

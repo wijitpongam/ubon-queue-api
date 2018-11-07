@@ -31,6 +31,14 @@ module.exports = {
   getInfo(db, id) {
     return db('users')
       .where('id', id);
+  },
+
+  // Queue 
+  getVisit(db, datevisit) {
+    return db('visit')
+      .where('datevisit', datevisit)
+      .orderBy('vn')
+      .limit(20)
   }
 
 };
