@@ -1,3 +1,4 @@
+const moment = require('moment');
 
 module.exports = {
   doLogin(db, username, password) {
@@ -75,6 +76,8 @@ module.exports = {
   },
 
   createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn) {
+    var dateCreate = moment().format('YYYY-MM-DD HH:mm:ss');
+
     return db('queue')
       .insert({
         hcode: hcode,
@@ -82,7 +85,8 @@ module.exports = {
         vn: vn,
         servpoint_code: servpointCode,
         date_serv: dateServ,
-        queue_number: queueNumber
+        queue_number: queueNumber,
+        date_create: dateCreate
       });
   },
 
