@@ -35,11 +35,17 @@ module.exports = {
 
   // Queue 
   getVisit(db, datevisit) {
+
+    var subQuery = db('queue as q')
+      .select('q.vn')
+      .where('q.date_serv', datevisit);
+
     return db('visit as v')
       .innerJoin('service_point as p', 'p.servpoint_code', 'v.cln')
       .where('v.datevisit', datevisit)
-      .orderBy('v.vn')
-      .limit(20)
+      .whereNotIn('v.vn', subQuery)
+      .orderBy('v.vn');
+    // .limit(20);
   },
 
   updateServicePointQueueNumber(db, hcode, servpointCode, dateServ) {
@@ -66,8 +72,19 @@ module.exports = {
       .where('servpoint_code', servpointCode)
       .where('date_serv', dateServ)
       .limit(1);
-  }
+  },
 
+  createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn) {
+    return db('queue')
+      .insert({
+        hcode: hcode,
+        hn: hn,
+        vn: vn,
+        servpoint_code: servpointCode,
+        date_serv: dateServ,
+        queue_number: queueNumber
+      });
+  },
 
 
 };

@@ -229,6 +229,8 @@ app.post('/queue/register', checkAuth, async (req, res) => {
       // return queue
     }
 
+    await model.createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn);
+
     res.send({ ok: true, hn: hn, vn: vn, queueNumber: queueNumber });
 
   } catch (error) {
