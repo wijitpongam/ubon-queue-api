@@ -202,6 +202,11 @@ app.get('/queue/visit', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
+app.get('/queue/piority', checkAuth, async (req, res) => {
+  var rs = await model.getPiority(db);
+  res.send({ ok: true, rows: rs });
+});
+
 app.post('/queue/register', checkAuth, async (req, res) => {
 
   var servpointCode = req.body.servpointCode;

@@ -35,6 +35,11 @@ module.exports = {
   },
 
   // Queue 
+
+  getPiority(db) {
+    return db('l_priority');
+  },
+
   getVisit(db, datevisit) {
 
     var subQuery = db('queue as q')
