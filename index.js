@@ -202,6 +202,43 @@ app.get('/queue/visit', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
+app.post('/queue/register', checkAuth, async (req, res) => {
+
+  var servpointCode = req.body.servpointCode;
+  var hcode = req.body.hcode;
+  var dateServ = req.body.dateServ;
+  var hn = req.body.hn;
+  var vn = req.body.vn;
+  var prename = req.body.prename;
+  var firstName = req.body.firstName;
+  var lastName = req.body.lastName;
+  var birthDate = req.body.birthDate;
+
+  var queueNumber = 0;
+  // 1.ตรวจสอบคิวปัจจุบันของแผนก
+  try {
+    var rs1 = await model.checkServicePointQueueNumber(db, hcode, servpointCode, dateServ);
+    if (rs1.length) {
+      queueNumber = rs1[0]['queue_number'] + 1;
+      await model.updateServicePointQueueNumber(db, hcode, servpointCode, dateServ);
+      // return queue
+    } else {
+      console.log('New queue');
+      queueNumber = 1;
+      await model.createServicePointQueueNumber(db, hcode, servpointCode, dateServ);
+      // return queue
+    }
+
+    res.send({ ok: true, hn: hn, vn: vn, queueNumber: queueNumber });
+
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false })
+  }
+
+
+});
+
 //error handlers
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res, next) => {
