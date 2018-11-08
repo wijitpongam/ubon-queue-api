@@ -36,7 +36,7 @@ module.exports = {
 
   // Queue 
 
-  getPiority(db) {
+  getPriority(db) {
     return db('l_priority');
   },
 

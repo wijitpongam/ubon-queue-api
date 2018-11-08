@@ -202,8 +202,8 @@ app.get('/queue/visit', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
-app.get('/queue/piority', checkAuth, async (req, res) => {
-  var rs = await model.getPiority(db);
+app.get('/queue/priority', checkAuth, async (req, res) => {
+  var rs = await model.getPriority(db);
   res.send({ ok: true, rows: rs });
 });
 
