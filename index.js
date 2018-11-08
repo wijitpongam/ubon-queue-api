@@ -228,6 +228,15 @@ app.get('/queue/clinic', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
+app.get('/queue/clinic-queue', checkAuth, async (req, res) => {
+
+  var servpointCode = req.query.servpointCode;
+
+  var rs = await model.getClinicQueue(db, servpointCode, process.env.HCODE);
+
+  res.send({ ok: true, rows: rs[0] });
+});
+
 app.post('/queue/register', checkAuth, async (req, res) => {
 
   console.log(req.body);

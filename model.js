@@ -40,6 +40,17 @@ module.exports = {
     return db('l_priority');
   },
 
+  getClinicQueue(db, servpointCode, hcode) {
+    var sql = `
+    select q.*, v.fname, v.lname
+    from queue as q
+    inner join visit as v on v.hn=q.hn and v.vn=q.vn
+    where q.servpoint_code=? and q.room_id is null and q.hcode=?
+    order by q.queue_number asc
+    `;
+    return db.raw(sql, [servpointCode, hcode]);
+  },
+
   getClinic(db, hcode) {
     var sqlCount = db('queue as q')
       .select(db.raw('count(*)'))
