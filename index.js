@@ -219,6 +219,8 @@ app.post('/queue/register', checkAuth, async (req, res) => {
   var lastName = req.body.lastName;
   var birthDate = req.body.birthDate;
 
+  var priorityId = req.body.priorityId;
+
   var queueNumber = 0;
   // 1.ตรวจสอบคิวปัจจุบันของแผนก
   try {
@@ -234,7 +236,11 @@ app.post('/queue/register', checkAuth, async (req, res) => {
       // return queue
     }
 
-    await model.createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn);
+    await model.createQueueInfo(
+      db, hcode, servpointCode,
+      dateServ, queueNumber,
+      hn, vn, priorityId
+    );
 
     res.send({ ok: true, hn: hn, vn: vn, queueNumber: queueNumber });
 

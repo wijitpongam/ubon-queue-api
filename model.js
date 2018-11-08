@@ -80,7 +80,7 @@ module.exports = {
       .limit(1);
   },
 
-  createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn) {
+  createQueueInfo(db, hcode, servpointCode, dateServ, queueNumber, hn, vn, priorityId) {
     var dateCreate = moment().format('YYYY-MM-DD HH:mm:ss');
 
     return db('queue')
@@ -91,6 +91,7 @@ module.exports = {
         servpoint_code: servpointCode,
         date_serv: dateServ,
         queue_number: queueNumber,
+        priority_id: priorityId,
         date_create: dateCreate
       });
   },
