@@ -223,6 +223,11 @@ app.get('/queue/priority', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
+app.get('/queue/clinic', checkAuth, async (req, res) => {
+  var rs = await model.getClinic(db, process.env.HCODE);
+  res.send({ ok: true, rows: rs });
+});
+
 app.post('/queue/register', checkAuth, async (req, res) => {
 
   console.log(req.body);

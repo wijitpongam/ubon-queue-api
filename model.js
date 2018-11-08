@@ -40,6 +40,10 @@ module.exports = {
     return db('l_priority');
   },
 
+  getClinic(db, hcode) {
+    return db('service_point').where('hcode', hcode).orderBy('servpoint_name');
+  },
+
   getVisit(db, datevisit) {
 
     var subQuery = db('queue as q')
