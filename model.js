@@ -41,7 +41,18 @@ module.exports = {
   },
 
   getClinic(db, hcode) {
-    return db('service_point').where('hcode', hcode).orderBy('servpoint_name');
+    var sqlCount = db('queue as q')
+      .select(db.raw('count(*)'))
+      .where('q.hcode', hcode)
+      .whereRaw('q.servpoint_code=s.servpoint_code')
+      .whereNull('q.room_id')
+      .groupBy('q.servpoint_code')
+      .as('total');
+
+    return db('service_point as s')
+      .select('s.*', sqlCount)
+      .where('s.hcode', hcode)
+      .orderBy('s.servpoint_name');
   },
 
   getVisit(db, datevisit) {
