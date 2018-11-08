@@ -42,9 +42,10 @@ module.exports = {
 
   getClinicQueue(db, servpointCode, hcode) {
     var sql = `
-    select q.*, v.fname, v.lname
+    select q.*, v.fname, v.lname, p.priority_name
     from queue as q
     inner join visit as v on v.hn=q.hn and v.vn=q.vn
+    left join l_priority as p on p.priority_id=q.priority
     where q.servpoint_code=? and q.room_id is null and q.hcode=?
     order by q.queue_number asc
     `;
