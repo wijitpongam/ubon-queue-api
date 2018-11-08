@@ -225,6 +225,8 @@ app.get('/queue/priority', checkAuth, async (req, res) => {
 
 app.post('/queue/register', checkAuth, async (req, res) => {
 
+  console.log(req.body);
+
   var servpointCode = req.body.servpointCode;
   var hcode = process.env.HCODE;
   var dateServ = req.body.dateServ;
