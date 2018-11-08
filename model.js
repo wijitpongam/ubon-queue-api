@@ -46,6 +46,21 @@ module.exports = {
       .orderBy('room_number');
   },
 
+  setQueueRoomNumber(db, vn, roomId) {
+    return db('queue')
+      .where('vn', vn)
+      .update({ room_id: roomId });
+  },
+
+  updateCurrentQueue(db, hcode, servpointCode, dateServ, currentQueue, roomId) {
+    var sql = `
+    INSERT INTO queue_detail(hcode, servpoint_code, date_serv, current_queue, room_id)
+    VALUES(?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE current_queue=?, room_id=?
+    `;
+    return db.raw(sql, [hcode, servpointCode, dateServ, currentQueue, roomId, currentQueue, roomId]);
+  },
+
   getClinicQueue(db, servpointCode, hcode) {
     var sql = `
     select q.*, v.fname, v.lname, p.priority_name

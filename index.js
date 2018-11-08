@@ -241,7 +241,44 @@ app.get('/queue/clinic-queue', checkAuth, async (req, res) => {
 
   var rs = await model.getClinicQueue(db, servpointCode, process.env.HCODE);
 
-  res.send({ ok: true, rows: rs[0] });
+  var data = [];
+
+  rs[0].forEach(v => {
+    var obj = {
+      "hcode": v.hcode,
+      "hn": v.hn,
+      "vn": v.vn,
+      "servpoint_code": v.servpoint_code,
+      "priority_id": v.priority_id,
+      "room_id": v.room_id,
+      "date_serv": moment(v.date_serv).format('YYYY-MM-DD'),
+      "queue_number": v.queue_number,
+      "queue_his": v.queue_his,
+      "fname": v.fname,
+      "lname": v.lname,
+      "priority_name": v.priority_name
+    };
+
+    data.push(obj);
+
+  });
+
+  res.send({ ok: true, rows: data });
+});
+
+app.post('/queue/queue-caller', checkAuth, async (req, res) => {
+  console.log(req.body);
+  var servpointCode = req.body.servpointCode;
+  var dateServ = req.body.dateServ;
+  var roomId = req.body.roomId;
+  var vn = req.body.vn;
+  var queueNumber = req.body.queueNumber;
+  var hcode = process.env.HCODE;
+
+  await model.setQueueRoomNumber(db, vn, roomId);
+  await model.updateCurrentQueue(db, hcode, servpointCode, dateServ, queueNumber, roomId);
+
+  res.send({ ok: true });
 });
 
 app.post('/queue/register', checkAuth, async (req, res) => {
