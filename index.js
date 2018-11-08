@@ -199,7 +199,23 @@ app.get('/users/:id', checkAuth, async (req, res, next) => {
 app.get('/queue/visit', checkAuth, async (req, res) => {
   var datevisit = moment().format('YYYY-MM-DD');
   var rs = await model.getVisit(db, datevisit);
-  res.send({ ok: true, rows: rs });
+  var data = [];
+
+  rs.forEach(v => {
+    var obj = {};
+    obj.hn = v.hn;
+    obj.vn = v.vn;
+    obj.fname = v.fname;
+    obj.lname = v.lname;
+    obj.cln = v.cln;
+    obj.namecln = v.namecln;
+    obj.datevisit = moment(v.datevisit).format('YYYY-MM-DD');
+    obj.timevisit = v.timevisit;
+
+    data.push(obj);
+  });
+
+  res.send({ ok: true, rows: data });
 });
 
 app.get('/queue/priority', checkAuth, async (req, res) => {
