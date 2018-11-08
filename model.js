@@ -40,6 +40,12 @@ module.exports = {
     return db('l_priority');
   },
 
+  getRooms(db, servpointCode) {
+    return db('service_room')
+      .where('servpoint_code', servpointCode)
+      .orderBy('room_number');
+  },
+
   getClinicQueue(db, servpointCode, hcode) {
     var sql = `
     select q.*, v.fname, v.lname, p.priority_name
