@@ -73,12 +73,26 @@ module.exports = {
     return db.raw(sql, [servpointCode, hcode]);
   },
 
-  getClinic(db, hcode) {
+  getQueueClinic(db, servpointCode, dateServ) {
+    var sql = `
+    select qd.*, v.hn, v.fname, v.lname, sr.room_name, sr.room_number, po.priority_name
+    from queue_detail as qd
+    inner join queue as q on q.queue_number=qd.current_queue and q.servpoint_code=? and q.date_serv=?
+    inner join visit as v on v.vn=q.vn
+    inner join service_room as sr on sr.room_id=qd.room_id
+    inner join l_priority as po on po.priority_id=q.priority_id
+    where qd.servpoint_code=? and qd.date_serv=?
+    `;
+    return db.raw(sql, [servpointCode, dateServ, servpointCode, dateServ]);
+  },
+
+  getClinic(db, hcode, dateServ) {
     var sqlCount = db('queue as q')
       .select(db.raw('count(*)'))
       .where('q.hcode', hcode)
       .whereRaw('q.servpoint_code=s.servpoint_code')
       .whereNull('q.room_id')
+      .where('date_serv', dateServ)
       .groupBy('q.servpoint_code')
       .as('total');
 

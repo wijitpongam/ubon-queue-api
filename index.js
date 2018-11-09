@@ -2,6 +2,9 @@
 
 require('dotenv').config();
 const Knex = require('knex');
+const path = require('path');
+const fs = require('fs');
+
 const crypto = require('crypto');
 var multer = require('multer');
 
@@ -223,6 +226,30 @@ app.get('/queue/priority', checkAuth, async (req, res) => {
   res.send({ ok: true, rows: rs });
 });
 
+app.get('/qrcode', async (req, res) => {
+  var QRCode = require('qrcode');
+  QRCode.toDataURL('https://www.google.com', {
+    color: {
+      dark: '#018786', // Transparent background
+    },
+    margin: 4
+  })
+    .then(url => {
+      var img = new Buffer(url.split(',')[1], 'base64');
+
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': img.length
+      });
+      res.end(img);
+
+    }).catch(err => {
+      console.log(err);
+      res.send({ ok: false, error: err });
+    });
+
+});
+
 app.get('/queue/rooms', checkAuth, async (req, res) => {
   var servpointCode = req.query.servpointCode;
 
@@ -231,7 +258,8 @@ app.get('/queue/rooms', checkAuth, async (req, res) => {
 });
 
 app.get('/queue/clinic', checkAuth, async (req, res) => {
-  var rs = await model.getClinic(db, process.env.HCODE);
+  var dateServ = moment().format('YYYY-MM-DD');
+  var rs = await model.getClinic(db, process.env.HCODE, dateServ);
   res.send({ ok: true, rows: rs });
 });
 
@@ -257,6 +285,34 @@ app.get('/queue/clinic-queue', checkAuth, async (req, res) => {
       "fname": v.fname,
       "lname": v.lname,
       "priority_name": v.priority_name
+    };
+
+    data.push(obj);
+
+  });
+
+  res.send({ ok: true, rows: data });
+});
+
+app.get('/queue/queue-clinic', checkAuth, async (req, res) => {
+
+  var servpointCode = req.query.servpointCode;
+  var dateServ = moment().format('YYYY-MM-DD');
+
+  var rs = await model.getQueueClinic(db, servpointCode, dateServ);
+
+  var data = [];
+
+  rs[0].forEach(v => {
+    var obj = {
+      "hn": v.hn,
+      "priority_name": v.priority_name,
+      "room_number": v.room_number,
+      "room_name": v.room_name,
+      "update_date": moment(v.update_date).format('YYYY-MM-DD HH:mm'),
+      "current_queue": v.current_queue,
+      "fname": v.fname,
+      "lname": v.lname
     };
 
     data.push(obj);
